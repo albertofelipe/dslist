@@ -35,4 +35,8 @@ public class GameService {
         return new GameDTO(result);
     }
 
+    public void deleteById(Long id){
+        repository.deleteById(id);
+    }
+
 }
