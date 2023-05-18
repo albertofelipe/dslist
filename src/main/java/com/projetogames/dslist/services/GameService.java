@@ -50,4 +50,8 @@ public class GameService {
         BeanUtils.copyProperties(game, gameOptional);
         repository.save(gameOptional);
     }
+
+    public GameDTO insert(Game game){
+        return new GameDTO(repository.save(game));
+    }
 }
