@@ -5,9 +5,12 @@ import com.projetogames.dslist.dto.GameMinDTO;
 import com.projetogames.dslist.entities.Game;
 import com.projetogames.dslist.projections.GameMinProjection;
 import com.projetogames.dslist.repositories.GameRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -35,8 +38,16 @@ public class GameService {
         return new GameDTO(result);
     }
 
+    @Transactional(readOnly = true)
     public void deleteById(Long id){
         repository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
+    public void update(Long id, GameDTO game) {
+        Game gameOptional = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Game not found"));
+        BeanUtils.copyProperties(game, gameOptional);
+        repository.save(gameOptional);
+    }
 }

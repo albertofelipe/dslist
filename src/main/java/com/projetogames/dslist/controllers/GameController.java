@@ -2,7 +2,7 @@ package com.projetogames.dslist.controllers;
 
 import com.projetogames.dslist.dto.GameDTO;
 import com.projetogames.dslist.dto.GameMinDTO;
-import com.projetogames.dslist.entities.Game;
+import com.projetogames.dslist.repositories.GameRepository;
 import com.projetogames.dslist.services.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +16,9 @@ public class GameController {
 
     @Autowired
     private GameService service;
+
+    @Autowired
+    GameRepository repository;
 
     @GetMapping(value = "/{id}")
     public ResponseEntity <GameDTO> findById(@PathVariable Long id){
@@ -33,5 +36,11 @@ public class GameController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object>update(@PathVariable Long id, @RequestBody GameDTO gameDTO) {
+        service.update(id, gameDTO);
+        return ResponseEntity.ok().body(gameDTO);
     }
 }

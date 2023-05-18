@@ -4,6 +4,7 @@ import com.projetogames.dslist.dto.GameDTO;
 import com.projetogames.dslist.dto.GameListDTO;
 import com.projetogames.dslist.dto.GameMinDTO;
 import com.projetogames.dslist.dto.ReplacementDTO;
+import com.projetogames.dslist.entities.Game;
 import com.projetogames.dslist.services.GameListService;
 import com.projetogames.dslist.services.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
