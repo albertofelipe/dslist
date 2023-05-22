@@ -5,12 +5,12 @@ import com.projetogames.dslist.dto.GameMinDTO;
 import com.projetogames.dslist.entities.Game;
 import com.projetogames.dslist.projections.GameMinProjection;
 import com.projetogames.dslist.repositories.GameRepository;
+import com.projetogames.dslist.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -34,19 +34,24 @@ public class GameService {
 
     @Transactional(readOnly = true)
     public GameDTO findById(Long id){
-        Game result = repository.findById(id).get();
+        Game result = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(id));
         return new GameDTO(result);
     }
 
     @Transactional(readOnly = true)
-    public void deleteById(Long id){
-        repository.deleteById(id);
+    public void deleteById(Long id) {
+        try {
+            repository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException(id);
+        }
     }
 
     @Transactional(readOnly = true)
     public void update(Long id, GameDTO game) {
         Game gameOptional = repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Game not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(id));
         BeanUtils.copyProperties(game, gameOptional);
         repository.save(gameOptional);
     }
